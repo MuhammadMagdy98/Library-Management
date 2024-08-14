@@ -17,7 +17,6 @@ public class PatronServiceImpl implements PatronService {
     @Autowired
     private PatronRepository patronRepository;
 
-
     private PatronDTO getPatronDTO(Patron patrons) {
         PatronDTO patron = new PatronDTO();
 
@@ -34,17 +33,18 @@ public class PatronServiceImpl implements PatronService {
 
     @Override
     public Mono<PatronDTO> getPatronById(Long id) {
-        return patronRepository.findById(id).map(this::getPatronDTO).switchIfEmpty(Mono.error(new LibraryException(LibraryError.PATRON_NOT_FOUND)));
+        return patronRepository.findById(id).map(this::getPatronDTO)
+                .switchIfEmpty(Mono.error(new LibraryException(LibraryError.PATRON_NOT_FOUND)));
     }
 
     @Override
     public Mono<PatronDTO> addPatron(PatronDTO patron) {
         return Mono.fromSupplier(() -> {
-                    Patron myPatron = new Patron();
-                    myPatron.setName(patron.getName());
-                    myPatron.setContactInfo(patron.getContactInfo());
-                    return myPatron;
-                })
+            Patron myPatron = new Patron();
+            myPatron.setName(patron.getName());
+            myPatron.setContactInfo(patron.getContactInfo());
+            return myPatron;
+        })
                 .flatMap(patronRepository::save)
                 .doOnNext(savedPatron -> {
                     System.out.println("Saved Book ID: " + savedPatron.toString());
@@ -60,7 +60,7 @@ public class PatronServiceImpl implements PatronService {
             patron.setContactInfo(updatedPatron.getContactInfo());
 
             return patronRepository.save(patron);
-        }).map(this::getPatronDTO);
+        }).map(this::getPatronDTO).switchIfEmpty(Mono.error(new LibraryException(LibraryError.PATRON_NOT_FOUND)));
     }
 
     @Override

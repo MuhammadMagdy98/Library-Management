@@ -28,4 +28,6 @@ public class BookDTO implements Serializable {
     private Instant publicationYear;
     @NotBlank(message = "ISBN cannot be blank")
     private String ISBN;
+
+    private Boolean isBorrowed;
 }

@@ -20,17 +20,16 @@ import reactor.core.publisher.Mono;
 
 import java.util.List;
 
-
 @RestController
 @RequestMapping(Url.PATRON)
 public class PatronController {
     @Autowired
     private PatronService patronService;
 
-
     @PostMapping("")
     public Mono<ResponseDTO<PatronDTO>> addPatron(@Validated @RequestBody PatronDTO patron) {
-        return patronService.addPatron(patron).map(res -> new ResponseDTO<>(HttpStatus.OK.value(), res, "Patron is added successfully"));
+        return patronService.addPatron(patron)
+                .map(res -> new ResponseDTO<>(HttpStatus.OK.value(), res, "Patron is added successfully"));
     }
 
     @GetMapping
@@ -40,20 +39,21 @@ public class PatronController {
 
     @GetMapping("/{id}")
     public Mono<ResponseDTO<PatronDTO>> getBookById(@PathVariable Long id) {
-        return patronService.getPatronById(id).map(res -> new ResponseDTO<>(HttpStatus.OK.value(), res, null)).onErrorResume(LibraryException.class, ex ->
-                Mono.just(new ResponseDTO<>(ex.getError().getStatus().value(), null, ex.getMessage()))
-        );
+        return patronService.getPatronById(id).map(res -> new ResponseDTO<>(HttpStatus.OK.value(), res, null))
+                .onErrorResume(LibraryException.class,
+                        ex -> Mono.just(new ResponseDTO<>(ex.getError().getStatus().value(), null, ex.getMessage())));
     }
 
     @PutMapping("/{id}")
-    public Mono<ResponseDTO<PatronDTO>> updatePatronById(@PathVariable Long id, @Validated @RequestBody PatronDTO patron) {
-        return patronService.updatePatronById(id, patron).map(res -> new ResponseDTO<>(HttpStatus.OK.value(), res, null));
+    public Mono<ResponseDTO<PatronDTO>> updatePatronById(@PathVariable Long id,
+            @Validated @RequestBody PatronDTO patron) {
+        return patronService.updatePatronById(id, patron)
+                .map(res -> new ResponseDTO<>(HttpStatus.OK.value(), res, null));
     }
 
     @DeleteMapping("/{id}")
     public Mono<ResponseDTO<Boolean>> deletePatronById(@PathVariable Long id) {
         return patronService.deletePatronById(id).map(res -> new ResponseDTO<>(HttpStatus.OK.value(), res, null));
     }
-
 
 }

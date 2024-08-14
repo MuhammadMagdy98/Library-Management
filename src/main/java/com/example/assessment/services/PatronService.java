@@ -17,5 +17,4 @@ public interface PatronService {
 
     Mono<Boolean> deletePatronById(Long id);
 
-
 }

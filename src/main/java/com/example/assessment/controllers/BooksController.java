@@ -3,6 +3,7 @@ package com.example.assessment.controllers;
 import com.example.assessment.constants.Url;
 import com.example.assessment.dtos.BookDTO;
 import com.example.assessment.dtos.ResponseDTO;
+import com.example.assessment.exceptions.LibraryException;
 import com.example.assessment.services.BooksService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -19,7 +20,6 @@ import reactor.core.publisher.Mono;
 
 import java.util.List;
 
-
 @RestController
 @RequestMapping(Url.BOOKS)
 public class BooksController {
@@ -29,7 +29,8 @@ public class BooksController {
 
     @PostMapping("")
     public Mono<ResponseDTO<BookDTO>> addBook(@Validated @RequestBody BookDTO book) {
-        return booksService.addBook(book).map(res -> new ResponseDTO<>(HttpStatus.OK.value(), res, "Book is added successfully"));
+        return booksService.addBook(book)
+                .map(res -> new ResponseDTO<>(HttpStatus.OK.value(), res, "Book is added successfully"));
     }
 
     @GetMapping
@@ -39,12 +40,15 @@ public class BooksController {
 
     @GetMapping("/{id}")
     public Mono<ResponseDTO<BookDTO>> getBookById(@PathVariable Long id) {
-        return booksService.getBookById(id).map(res -> new ResponseDTO<>(HttpStatus.OK.value(), res, null));
+        return booksService.getBookById(id).map(res -> new ResponseDTO<>(HttpStatus.OK.value(), res, null))
+                .onErrorResume(LibraryException.class,
+                        ex -> Mono.just(new ResponseDTO<>(ex.getError().getStatus().value(), null, ex.getMessage())));
     }
 
     @PutMapping("/{id}")
     public Mono<ResponseDTO<BookDTO>> getBookById(@PathVariable Long id, @Validated @RequestBody BookDTO book) {
-        return booksService.updateBookById(id, book).map(res -> new ResponseDTO<>(HttpStatus.OK.value(), res, null));
+        return booksService.updateBookById(id, book).map(res -> new ResponseDTO<>(HttpStatus.OK.value(), res, null)).onErrorResume(LibraryException.class,
+                ex -> Mono.just(new ResponseDTO<>(ex.getError().getStatus().value(), null, ex.getMessage())));
     }
 
     @DeleteMapping("/{id}")
