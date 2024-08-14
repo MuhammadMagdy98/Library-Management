@@ -5,6 +5,7 @@ import com.example.assessment.dtos.BookDTO;
 import com.example.assessment.exceptions.LibraryError;
 import com.example.assessment.exceptions.LibraryException;
 import com.example.assessment.repositories.BookRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
@@ -30,6 +31,7 @@ public class BooksServiceImpl implements BooksService {
     }
 
     @Override
+    @Transactional
     public Mono<BookDTO> addBook(BookDTO book) {
         return Mono.fromSupplier(() -> {
             Book myBook = new Book();
@@ -45,6 +47,7 @@ public class BooksServiceImpl implements BooksService {
     }
 
     @Override
+    @Transactional
     public Mono<List<BookDTO>> getBooks() {
         return bookRepository.findAll()
                 .map(this::getBookDTO)
@@ -52,12 +55,14 @@ public class BooksServiceImpl implements BooksService {
     }
 
     @Override
+    @Transactional
     public Mono<BookDTO> getBookById(Long id) {
         return bookRepository.findById(id).map(this::getBookDTO)
                 .switchIfEmpty(Mono.error(new LibraryException(LibraryError.BOOK_NOT_FOUND)));
     }
 
     @Override
+    @Transactional
     public Mono<BookDTO> updateBookById(Long id, BookDTO book) {
         return bookRepository.findById(id).flatMap(books -> {
             books.setAuthor(book.getAuthor());
@@ -69,6 +74,7 @@ public class BooksServiceImpl implements BooksService {
     }
 
     @Override
+    @Transactional
     public Mono<Boolean> deleteBookById(Long id) {
         return bookRepository.existsById(id)
                 .flatMap(exists -> {
