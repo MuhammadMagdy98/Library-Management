@@ -23,7 +23,6 @@ public class RecordServiceImpl implements RecordService {
     private PatronRepository patronRepository;
     @Override
     public Mono<Boolean> borrowBook(Long bookId, Long patronId) {
-        System.out.println("book id is " + bookId);
         return bookRepository.findById(bookId)
                 .flatMap(book -> {
                     System.out.println(book.toString());
@@ -33,13 +32,12 @@ public class RecordServiceImpl implements RecordService {
                         return bookRepository.save(book)
                                 .then(patronRepository.findById(patronId)
                                         .flatMap(patron -> {
-                                            // Create a new borrowing record
-                                            Record records = new Record();
-                                            records.setBookId(bookId);
-                                            records.setPatronId(patronId);
-                                            records.setBorrowDate(Instant.now());
+                                            Record record = new Record();
+                                            record.setBookId(bookId);
+                                            record.setPatronId(patronId);
+                                            record.setBorrowDate(Instant.now());
 
-                                            return recordRepository.save(records)
+                                            return recordRepository.save(record)
                                                     .then(Mono.just(true));
                                         })
                                         .switchIfEmpty(Mono.error(new LibraryException(LibraryError.PATRON_NOT_FOUND)))
@@ -48,7 +46,7 @@ public class RecordServiceImpl implements RecordService {
                         return Mono.error(new LibraryException(LibraryError.BOOK_NOT_AVAILABLE));
                     }
                 })
-                .switchIfEmpty(Mono.error(new LibraryException(LibraryError.BOOK_NOT_FOUND))); 
+                .switchIfEmpty(Mono.error(new LibraryException(LibraryError.BOOK_NOT_FOUND)));
     }
 
 
