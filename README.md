@@ -113,6 +113,7 @@ spring.jpa.hibernate.ddl-auto=update
 ### Book Management
 
 -   **GET /api/books**: Retrieve a list of all books
+  
 **Response**:
 ```json
 {
