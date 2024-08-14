@@ -144,6 +144,7 @@ spring.jpa.hibernate.ddl-auto=update
 }
 ```
 -   **GET /api/books/{id}**: Retrieve details of a specific book by ID
+  
 **Response**
 ```json
 {
@@ -167,6 +168,7 @@ spring.jpa.hibernate.ddl-auto=update
 ```
 
 -   **POST /api/books**: Add a new book to the library
+  
 **Request Body**:
 ```json
 {
@@ -178,6 +180,7 @@ spring.jpa.hibernate.ddl-auto=update
 
 ``` 
 -   **PUT /api/books/{id}**: Update an existing book's information
+  
 **Request Body**:
 ```json
 {
@@ -194,6 +197,7 @@ spring.jpa.hibernate.ddl-auto=update
 -   **GET /api/patrons**: Retrieve a list of all patrons
 -   **GET /api/patrons/{id}**: Retrieve details of a specific patron by ID
 -   **POST /api/patrons**: Add a new patron to the system
+  
 **Request Body**:
 ```json
 {
@@ -202,6 +206,7 @@ spring.jpa.hibernate.ddl-auto=update
 }
 ```
 -   **PUT /api/patrons/{id}**: Update an existing patron's information
+  
 **Request Body**:
 ```json
 {
