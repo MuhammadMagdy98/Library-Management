@@ -1,6 +1,5 @@
 package com.example.assessment.configs;
 
-import org.springframework.context.annotation.Bean;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.r2dbc.core.DatabaseClient;
 import org.springframework.stereotype.Component;
@@ -20,7 +19,8 @@ public class DatabaseInitializer {
 
     @PostConstruct
     public void initialize() throws Exception {
-        String schema = StreamUtils.copyToString(new ClassPathResource("schema.sql").getInputStream(), StandardCharsets.UTF_8);
+        String schema = StreamUtils.copyToString(new ClassPathResource("schema.sql").getInputStream(),
+                StandardCharsets.UTF_8);
         databaseClient.sql(schema).then().subscribe();
     }
 }

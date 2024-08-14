@@ -60,7 +60,7 @@ public class RecordServiceImpl implements RecordService {
                     return recordRepository.save(record)
                             .then(bookRepository.findById(bookId))
                             .flatMap(book -> {
-                                book.setIsBorrowed(true);
+                                book.setIsBorrowed(false);
 
                                 return bookRepository.save(book)
                                         .then(Mono.just(true));
