@@ -1,6 +1,5 @@
 package com.example.assessment.controllers;
 
-import com.example.assessment.dtos.BookDTO;
 import com.example.assessment.dtos.PatronDTO;
 import com.example.assessment.dtos.ResponseDTO;
 import com.example.assessment.exceptions.LibraryException;
@@ -31,7 +30,7 @@ public class PatronController {
 
     @PostMapping("")
     public Mono<ResponseDTO<PatronDTO>> addPatron(@Validated @RequestBody PatronDTO patron) {
-        return patronService.addPatron(patron).map(res -> new ResponseDTO<>(HttpStatus.OK.value(), res, "Book is added successfully"));
+        return patronService.addPatron(patron).map(res -> new ResponseDTO<>(HttpStatus.OK.value(), res, "Patron is added successfully"));
     }
 
     @GetMapping

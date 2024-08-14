@@ -4,21 +4,17 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
-
-import java.time.Instant;
+import org.springframework.data.relational.core.mapping.Table;
 
 @Data
-public class Records {
+@Table("patrons")
+public class Patron {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Long bookId;
+    private String name;
 
-    private Long patronId;
-
-    private Instant borrowDate;
-
-    private Instant returnDate;
+    private String contactInfo;
 
 }

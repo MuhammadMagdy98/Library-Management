@@ -1,6 +1,6 @@
 package com.example.assessment.services;
 
-import com.example.assessment.domains.Books;
+import com.example.assessment.domains.Book;
 import com.example.assessment.dtos.BookDTO;
 import com.example.assessment.repositories.BookRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +16,7 @@ public class BooksServiceImpl implements BooksService {
     private BookRepository bookRepository;
 
 
-    private BookDTO getBookDTO(Books book) {
+    private BookDTO getBookDTO(Book book) {
         BookDTO savedBookDTO = new BookDTO();
         savedBookDTO.setId(book.getId());
         savedBookDTO.setTitle(book.getTitle());
@@ -30,11 +30,12 @@ public class BooksServiceImpl implements BooksService {
     @Override
     public Mono<BookDTO> addBook(BookDTO book) {
         return Mono.fromSupplier(() -> {
-                    Books myBook = new Books();
+                    Book myBook = new Book();
                     myBook.setAuthor(book.getAuthor());
                     myBook.setTitle(book.getTitle());
                     myBook.setISBN(book.getISBN());
                     myBook.setPublicationYear(book.getPublicationYear());
+                    myBook.setIsBorrowed(false);
                     return myBook;
                 })
                 .flatMap(bookRepository::save)

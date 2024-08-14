@@ -1,13 +1,11 @@
 package com.example.assessment.services;
 
-import com.example.assessment.domains.Books;
-import com.example.assessment.domains.Patrons;
+import com.example.assessment.domains.Patron;
 import com.example.assessment.dtos.PatronDTO;
 import com.example.assessment.exceptions.LibraryError;
 import com.example.assessment.exceptions.LibraryException;
 import com.example.assessment.repositories.PatronRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
@@ -20,11 +18,11 @@ public class PatronServiceImpl implements PatronService {
     private PatronRepository patronRepository;
 
 
-    private PatronDTO getPatronDTO(Patrons patrons) {
+    private PatronDTO getPatronDTO(Patron patrons) {
         PatronDTO patron = new PatronDTO();
 
         patron.setId(patrons.getId());
-        patron.setName(patron.getName());
+        patron.setName(patrons.getName());
         patron.setContactInfo(patrons.getContactInfo());
         return patron;
     }
@@ -42,14 +40,14 @@ public class PatronServiceImpl implements PatronService {
     @Override
     public Mono<PatronDTO> addPatron(PatronDTO patron) {
         return Mono.fromSupplier(() -> {
-                    Patrons myPatron = new Patrons();
+                    Patron myPatron = new Patron();
                     myPatron.setName(patron.getName());
                     myPatron.setContactInfo(patron.getContactInfo());
                     return myPatron;
                 })
                 .flatMap(patronRepository::save)
-                .doOnNext(savedBook -> {
-                    System.out.println("Saved Book ID: " + savedBook.toString());
+                .doOnNext(savedPatron -> {
+                    System.out.println("Saved Book ID: " + savedPatron.toString());
                 })
                 .map(this::getPatronDTO);
     }
@@ -68,7 +66,7 @@ public class PatronServiceImpl implements PatronService {
     @Override
     public Mono<Boolean> deletePatronById(Long id) {
         return patronRepository.existsById(id).flatMap(exists -> {
-            if (exists) {
+            if (!exists) {
                 return Mono.just(false);
             }
             return patronRepository.deleteById(id).then(Mono.just(true));
