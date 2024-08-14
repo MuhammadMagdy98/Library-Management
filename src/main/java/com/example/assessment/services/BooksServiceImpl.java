@@ -26,6 +26,7 @@ public class BooksServiceImpl implements BooksService {
         return savedBookDTO;
 
     }
+
     @Override
     public Mono<BookDTO> addBook(BookDTO book) {
         return Mono.fromSupplier(() -> {
@@ -42,6 +43,7 @@ public class BooksServiceImpl implements BooksService {
                 })
                 .map(this::getBookDTO);
     }
+
     @Override
     public Mono<List<BookDTO>> getBooks() {
         return bookRepository.findAll()
@@ -50,8 +52,31 @@ public class BooksServiceImpl implements BooksService {
     }
 
     @Override
-    public Mono<BookDTO> getBookById(Long id)  {
+    public Mono<BookDTO> getBookById(Long id) {
         return bookRepository.findById(id).map(this::getBookDTO);
+    }
+
+    @Override
+    public Mono<BookDTO> updateBookById(Long id, BookDTO book) {
+        return bookRepository.findById(id).flatMap(books -> {
+            books.setAuthor(book.getAuthor());
+            books.setISBN(book.getISBN());
+            books.setTitle(book.getTitle());
+            books.setPublicationYear(book.getPublicationYear());
+            return bookRepository.save(books);
+        }).map(this::getBookDTO);
+    }
+    @Override
+    public Mono<Boolean> deleteBookById(Long id) {
+        return bookRepository.existsById(id)
+                .flatMap(exists -> {
+                    if (exists) {
+                        return bookRepository.deleteById(id)
+                                .then(Mono.just(true));
+                    } else {
+                        return Mono.just(false);
+                    }
+                });
     }
 
 }

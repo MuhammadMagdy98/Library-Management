@@ -13,8 +13,7 @@ import lombok.ToString;
 import java.io.Serializable;
 import java.time.Instant;
 
-@Getter
-@Setter
+
 @ToString
 @Data
 public class BookDTO implements Serializable {

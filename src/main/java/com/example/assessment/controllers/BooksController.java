@@ -6,9 +6,11 @@ import com.example.assessment.dtos.ResponseDTO;
 import com.example.assessment.services.BooksService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.http.HttpStatus;
@@ -23,7 +25,7 @@ import java.util.List;
 public class BooksController {
 
     @Autowired
-    BooksService booksService;
+    private BooksService booksService;
 
     @PostMapping("")
     public Mono<ResponseDTO<BookDTO>> addBook(@Validated @RequestBody BookDTO book) {
@@ -40,5 +42,14 @@ public class BooksController {
         return booksService.getBookById(id).map(res -> new ResponseDTO<>(HttpStatus.OK.value(), res, null));
     }
 
+    @PutMapping("/{id}")
+    public Mono<ResponseDTO<BookDTO>> getBookById(@PathVariable Long id, @Validated @RequestBody BookDTO book) {
+        return booksService.updateBookById(id, book).map(res -> new ResponseDTO<>(HttpStatus.OK.value(), res, null));
+    }
+
+    @DeleteMapping("/{id}")
+    public Mono<ResponseDTO<Boolean>> deleteBookById(@PathVariable Long id) {
+        return booksService.deleteBookById(id).map(res -> new ResponseDTO<>(HttpStatus.OK.value(), res, null));
+    }
 
 }
