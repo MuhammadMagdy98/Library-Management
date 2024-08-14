@@ -5,6 +5,7 @@ import com.example.assessment.dtos.PatronDTO;
 import com.example.assessment.exceptions.LibraryError;
 import com.example.assessment.exceptions.LibraryException;
 import com.example.assessment.repositories.PatronRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
@@ -27,17 +28,20 @@ public class PatronServiceImpl implements PatronService {
     }
 
     @Override
+    @Transactional
     public Mono<List<PatronDTO>> getPatrons() {
         return patronRepository.findAll().map(this::getPatronDTO).collectList();
     }
 
     @Override
+    @Transactional
     public Mono<PatronDTO> getPatronById(Long id) {
         return patronRepository.findById(id).map(this::getPatronDTO)
                 .switchIfEmpty(Mono.error(new LibraryException(LibraryError.PATRON_NOT_FOUND)));
     }
 
     @Override
+    @Transactional
     public Mono<PatronDTO> addPatron(PatronDTO patron) {
         return Mono.fromSupplier(() -> {
             Patron myPatron = new Patron();
@@ -53,6 +57,7 @@ public class PatronServiceImpl implements PatronService {
     }
 
     @Override
+    @Transactional
     public Mono<PatronDTO> updatePatronById(Long id, PatronDTO updatedPatron) {
         return patronRepository.findById(id).flatMap(patron -> {
 
@@ -64,6 +69,7 @@ public class PatronServiceImpl implements PatronService {
     }
 
     @Override
+    @Transactional
     public Mono<Boolean> deletePatronById(Long id) {
         return patronRepository.existsById(id).flatMap(exists -> {
             if (!exists) {

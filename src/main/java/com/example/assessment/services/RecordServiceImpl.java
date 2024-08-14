@@ -6,6 +6,7 @@ import com.example.assessment.exceptions.LibraryException;
 import com.example.assessment.repositories.BookRepository;
 import com.example.assessment.repositories.PatronRepository;
 import com.example.assessment.repositories.RecordRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
@@ -22,6 +23,7 @@ public class RecordServiceImpl implements RecordService {
     @Autowired
     private PatronRepository patronRepository;
     @Override
+    @Transactional
     public Mono<Boolean> borrowBook(Long bookId, Long patronId) {
         return bookRepository.findById(bookId)
                 .flatMap(book -> {
@@ -52,6 +54,7 @@ public class RecordServiceImpl implements RecordService {
 
 
     @Override
+    @Transactional
     public Mono<Boolean> returnBook(Long bookId, Long patronId) {
         return recordRepository.findByBookIdAndPatronId(bookId, patronId)
                 .flatMap(record -> {
