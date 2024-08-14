@@ -1,0 +1,3 @@
+CREATE TABLE IF
+    NOT EXISTS
+    books (id BIGSERIAL PRIMARY KEY, title VARCHAR(255), author VARCHAR(255), isbn VARCHAR(255), publication_year TIMESTAMP);
